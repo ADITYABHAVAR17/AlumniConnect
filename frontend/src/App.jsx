@@ -1,13 +1,64 @@
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import AlumniDashboard from "./pages/AlumniDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+
+import ViewProfile from "./components/Alumni/ViewProfile";
+import EditProfile from "./components/Alumni/EditProfile";
+import AlumniDirectory from "./components/Alumni/AlumniDirectory";
+
+import AdminHome from "./components/Admin/AdminHome";
+import AlumniList from "./components/Admin/AlumniList";
+import ViewAlumniProfile from "./components/Admin/ViewAlumniProfile";
+
+import RequireAuth from "./components/RequireAuth";
+import RequireRole from "./components/RequireRole";
+
+import FeedList from "./components/Feed/FeedList";
 
 function App() {
-
   return (
-    <>
-      
-    </>
-  )
+    // <Router>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* 🔒 Protected Alumni Routes */}
+      <Route
+        path="/alumni/dashboard"
+        element={
+          <RequireAuth>
+            <RequireRole role="alumni">
+              <AlumniDashboard />
+            </RequireRole>
+          </RequireAuth>
+        }
+      >
+        <Route path="profile" element={<ViewProfile />} />
+        <Route path="edit-profile" element={<EditProfile />} />
+        <Route path="directory" element={<AlumniDirectory />} />
+        <Route path="community" element={<FeedList />} />
+      </Route>
+
+      {/* 🔒 Protected Admin Routes */}
+      <Route
+        path="/admin/dashboard"
+        element={
+          <RequireAuth>
+            <RequireRole role="admin">
+              <AdminDashboard />
+            </RequireRole>
+          </RequireAuth>
+        }
+      >
+        <Route index element={<AdminHome />} />
+        <Route path="alumni-list" element={<AlumniList />} />
+        <Route path="view-alumni/:id" element={<ViewAlumniProfile />} />
+      </Route>
+    </Routes>
+    // </Router>
+  );
 }
 
-export default App
+export default App;
