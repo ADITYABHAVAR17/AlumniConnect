@@ -20,7 +20,7 @@ import ChatWindowWrapper from "./components/Chat/ChatWindowWrapper";
 import AlumniProfile from "./components/Alumni/AlumniProfile";
 
 import AlumniDataDirectory from "./components/AlumniDataDirectory";
-
+import AlumniHomepage from "./components/Alumni/AlumniHomepage";
 function App() {
   return (
     // <Router>
@@ -40,6 +40,7 @@ function App() {
           </RequireAuth>
         }
       >
+        <Route index element={<AlumniHomepage />} />
         <Route path="profile" element={<ViewProfile />} />
         <Route path="edit-profile" element={<EditProfile />} />
         <Route path="directory" element={<AlumniDirectory />} />
