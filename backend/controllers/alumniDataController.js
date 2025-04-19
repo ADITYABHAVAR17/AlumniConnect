@@ -18,7 +18,7 @@ export const getVerifiedAlumni = async (req, res) => {
     const alumni = await User.find(query).select("-password");
     res.status(200).json(alumni);
   } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err.message });
     console.error(err);
+    res.status(500).json({ message: "Server Error", error: err.message });
   }
 };

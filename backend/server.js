@@ -8,7 +8,12 @@ import adminRoutes from "./routes/adminRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import alumniDataRoutes from "./routes/alumniDataRoute.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
+// Needed for __dirname in ES Module syntax
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 dotenv.config();
 const app = express();
 
@@ -28,13 +33,24 @@ app.use("/api/posts", postRoutes);
 
 app.use("/api/messages", messageRoutes);
 
-app.use("/api/alumni/data", alumniDataRoutes);
+app.use("/api/data", alumniDataRoutes);
+
+//serve the frontend dist file
 
 const PORT = process.env.PORT || 5000;
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected");
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => console.error(err));
+
+// Serve static files from frontend dist folder
+app.use(express.static(path.join(__dirname, "../frontend", "dist")));
+
+// // Serve index.html for any unknown routes (for SPA routing)
+app.get("/test", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+});
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
