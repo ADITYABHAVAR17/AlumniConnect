@@ -1,6 +1,6 @@
 import express from "express";
 import Message from "../models/Message.js";
-import verifyToken from "../middleware/authalumni.js";
+import { verifyToken } from "../middleware/authalumni.js";
 
 const router = express.Router();
 
