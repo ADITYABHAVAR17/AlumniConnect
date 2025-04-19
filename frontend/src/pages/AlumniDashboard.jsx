@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import {
   Home,
@@ -12,10 +12,30 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import axios from "axios";
 
 function AlumniDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
+  const [profile, setProfile] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    axios
+      .get("/api/alumni/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setProfile(res.data);
+        console.log(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching profile:", err);
+        setLoading(false);
+      });
+  }, []);
 
   const isActive = (path) => {
     return location.pathname.endsWith(path)
@@ -24,7 +44,7 @@ function AlumniDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="flex bg-gray-100 min-h-screen">
       {/* Mobile sidebar toggle */}
       <div className="lg:hidden fixed top-4 left-4 z-20">
         <button
@@ -35,11 +55,11 @@ function AlumniDashboard() {
         </button>
       </div>
 
-      {/* Sidebar */}
+      {/* Sidebar - fixed on mobile, static on desktop */}
       <div
         className={`${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 fixed overflow-y-auto lg:relative z-10 transition-transform duration-300 ease-in-out w-64 h-screen bg-indigo-900 text-white shadow-lg flex flex-col`}
+        } fixed lg:sticky lg:translate-x-0 top-0 z-10 transition-transform duration-300 ease-in-out w-64 h-screen bg-indigo-900 text-white shadow-lg flex flex-col overflow-y-auto`}
       >
         {/* Logo & Header */}
         <div className="p-5 border-b border-indigo-800">
@@ -160,20 +180,24 @@ function AlumniDashboard() {
         <div className="p-4 border-t border-indigo-800">
           <div className="flex items-center">
             <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold">
-              JS
+              {profile.name ? profile.name.charAt(0).toUpperCase() : "?"}
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium">John Smith</p>
-              <p className="text-xs text-indigo-300">john.smith@example.com</p>
+              <p className="text-sm font-medium">
+                {profile.name || "Loading..."}
+              </p>
+              <p className="text-xs text-indigo-300">
+                {profile.email || "No email"}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="bg-white shadow">
+        <header className="bg-white shadow sticky top-0 z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
             <h1 className="text-2xl font-semibold text-gray-800">
               Alumni Dashboard
@@ -190,14 +214,16 @@ function AlumniDashboard() {
         </header>
 
         {/* Dashboard content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <Outlet />
+        <main className="flex-1">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <Outlet />
+            </div>
           </div>
         </main>
 
         {/* Footer */}
-        <footer className="bg-white border-t border-gray-200 mt-auto">
+        <footer className="bg-white border-t border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <p className="text-sm text-gray-500 text-center">
               © 2025 Alumni Association. All rights reserved.
