@@ -49,7 +49,7 @@ mongoose
 app.use(express.static(path.join(__dirname, "../frontend", "dist")));
 
 // // Serve index.html for any unknown routes (for SPA routing)
-app.get("/test", (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
 });
 
