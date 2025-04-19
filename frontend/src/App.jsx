@@ -16,6 +16,10 @@ import RequireAuth from "./components/RequireAuth";
 import RequireRole from "./components/RequireRole";
 
 import FeedList from "./components/Feed/FeedList";
+import ChatWindowWrapper from "./components/Chat/ChatWindowWrapper";
+import AlumniProfile from "./components/Alumni/AlumniProfile";
+
+import AlumniDataDirectory from "./components/AlumniDataDirectory";
 
 function App() {
   return (
@@ -23,6 +27,7 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/directory" element={<AlumniDataDirectory />} />
 
       {/* 🔒 Protected Alumni Routes */}
       <Route
@@ -39,6 +44,9 @@ function App() {
         <Route path="edit-profile" element={<EditProfile />} />
         <Route path="directory" element={<AlumniDirectory />} />
         <Route path="community" element={<FeedList />} />
+        <Route path="events" element={<FeedList />} />
+        <Route path="directory/:id" element={<AlumniProfile />} />
+        <Route path="chat/:receiverId" element={<ChatWindowWrapper />} />
       </Route>
 
       {/* 🔒 Protected Admin Routes */}

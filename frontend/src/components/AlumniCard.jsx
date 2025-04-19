@@ -1,1 +1,0 @@
-// AlumniCard.jsx content

@@ -6,6 +6,8 @@ import authRoutes from "./routes/auth.js";
 import alumniRoutes from "./routes/alumniRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
+import alumniDataRoutes from "./routes/alumniDataRoute.js";
 
 dotenv.config();
 const app = express();
@@ -23,6 +25,10 @@ app.use("/api/admin", adminRoutes);
 
 // Post Routes
 app.use("/api/posts", postRoutes);
+
+app.use("/api/messages", messageRoutes);
+
+app.use("/api/alumni/data", alumniDataRoutes);
 
 const PORT = process.env.PORT || 5000;
 mongoose
