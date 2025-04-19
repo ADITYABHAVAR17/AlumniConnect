@@ -61,10 +61,17 @@ function AlumniHomepage() {
         params: { limit: 3, upcoming: true },
       })
       .then((res) => {
-        setEvents(res.data);
+        console.log("Events API response:", res.data); // Debug log
+        if (Array.isArray(res.data)) {
+          setEvents(res.data);
+        } else {
+          console.error("Expected array but got:", res.data);
+          setEvents([]);
+        }
       })
       .catch((err) => {
         console.error("Error fetching events:", err);
+        setEvents([]);
       })
       .finally(() => {
         setLoading((prev) => ({ ...prev, events: false }));
@@ -77,10 +84,16 @@ function AlumniHomepage() {
         params: { limit: 3, sort: "recent" },
       })
       .then((res) => {
-        setDiscussions(res.data);
+        if (Array.isArray(res.data)) {
+          setDiscussions(res.data);
+        } else {
+          console.error("Expected array but got:", res.data);
+          setDiscussions([]);
+        }
       })
       .catch((err) => {
         console.error("Error fetching discussions:", err);
+        setDiscussions([]);
       })
       .finally(() => {
         setLoading((prev) => ({ ...prev, discussions: false }));
@@ -93,10 +106,16 @@ function AlumniHomepage() {
         params: { limit: 1 },
       })
       .then((res) => {
-        setUpdates(res.data);
+        if (Array.isArray(res.data)) {
+          setUpdates(res.data);
+        } else {
+          console.error("Expected array but got:", res.data);
+          setUpdates([]);
+        }
       })
       .catch((err) => {
         console.error("Error fetching university updates:", err);
+        setUpdates([]);
       })
       .finally(() => {
         setLoading((prev) => ({ ...prev, updates: false }));
@@ -157,14 +176,14 @@ function AlumniHomepage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
-              to="/directory"
+              to="/alumni/dashboard/directory"
               className="inline-flex items-center px-4 py-2 bg-white text-indigo-700 rounded-lg font-medium hover:bg-indigo-50 transition-colors"
             >
               <Users size={18} className="mr-2" />
               Find Alumni
             </Link>
             <Link
-              to="/events"
+              to="/alumni/dashboard/events"
               className="inline-flex items-center px-4 py-2 bg-indigo-800 bg-opacity-50 text-white rounded-lg font-medium hover:bg-opacity-70 transition-colors"
             >
               <Calendar size={18} className="mr-2" />
@@ -399,82 +418,78 @@ function AlumniHomepage() {
                     </div>
                   </div>
                 ))
-              ) : (
-                <>
-                  {events.map((event) => (
-                    <div
-                      key={event.id}
-                      className="p-6 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-start">
-                        <div className="bg-indigo-100 rounded-lg p-3 mr-4 text-center min-w-[60px]">
-                          <div className="text-xl font-bold text-indigo-800">
-                            {new Date(event.date).getDate()}
-                          </div>
-                          <div className="text-xs text-indigo-600">
-                            {new Date(event.date).toLocaleString("default", {
-                              month: "short",
-                            })}
-                          </div>
+              ) : Array.isArray(events) && events.length > 0 ? (
+                events.map((event) => (
+                  <div
+                    key={event.id}
+                    className="p-6 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-start">
+                      <div className="bg-indigo-100 rounded-lg p-3 mr-4 text-center min-w-[60px]">
+                        <div className="text-xl font-bold text-indigo-800">
+                          {new Date(event.date).getDate()}
                         </div>
-                        <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                            {event.title}
-                          </h3>
-                          <div className="flex items-center text-gray-500 text-sm mb-2">
-                            <Calendar size={14} className="mr-1" />
-                            {formatDate(event.date)} • {formatTime(event.date)}
-                          </div>
-                          <div className="flex items-center text-gray-500 text-sm mb-3">
-                            <MapPin size={14} className="mr-1" />
-                            {event.location}
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <div className="flex -space-x-2 mr-2">
-                                {Array.from({
-                                  length: Math.min(
-                                    3,
-                                    event.attendees_preview?.length || 0
-                                  ),
-                                }).map((_, i) => (
-                                  <div
-                                    key={i}
-                                    className="h-6 w-6 rounded-full bg-indigo-600 border-2 border-white ring-2 ring-transparent flex items-center justify-center text-xs text-white"
-                                  >
-                                    {event.attendees_preview?.[i]?.name
-                                      .charAt(0)
-                                      .toUpperCase() || ""}
-                                  </div>
-                                ))}
-                              </div>
-                              <span className="text-sm text-gray-600">
-                                {event.attendees_count || 0} attending
-                              </span>
+                        <div className="text-xs text-indigo-600">
+                          {new Date(event.date).toLocaleString("default", {
+                            month: "short",
+                          })}
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                          {event.title}
+                        </h3>
+                        <div className="flex items-center text-gray-500 text-sm mb-2">
+                          <Calendar size={14} className="mr-1" />
+                          {formatDate(event.date)} • {formatTime(event.date)}
+                        </div>
+                        <div className="flex items-center text-gray-500 text-sm mb-3">
+                          <MapPin size={14} className="mr-1" />
+                          {event.location}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className="flex -space-x-2 mr-2">
+                              {Array.from({
+                                length: Math.min(
+                                  3,
+                                  event.attendees_preview?.length || 0
+                                ),
+                              }).map((_, i) => (
+                                <div
+                                  key={i}
+                                  className="h-6 w-6 rounded-full bg-indigo-600 border-2 border-white ring-2 ring-transparent flex items-center justify-center text-xs text-white"
+                                >
+                                  {event.attendees_preview?.[i]?.name
+                                    .charAt(0)
+                                    .toUpperCase() || ""}
+                                </div>
+                              ))}
                             </div>
-                            <div className="flex gap-2">
-                              <button className="p-1 text-gray-400 hover:text-indigo-600 transition-colors">
-                                <Bookmark size={16} />
-                              </button>
-                              <Link
-                                to={`events/${event.id}`}
-                                className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-md text-sm hover:bg-indigo-100 transition-colors"
-                              >
-                                Details
-                              </Link>
-                            </div>
+                            <span className="text-sm text-gray-600">
+                              {event.attendees_count || 0} attending
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            <button className="p-1 text-gray-400 hover:text-indigo-600 transition-colors">
+                              <Bookmark size={16} />
+                            </button>
+                            <Link
+                              to={`events/${event.id}`}
+                              className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-md text-sm hover:bg-indigo-100 transition-colors"
+                            >
+                              Details
+                            </Link>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ))}
-
-                  {events.length === 0 && (
-                    <div className="p-8 text-center text-gray-500">
-                      No upcoming events found.
-                    </div>
-                  )}
-                </>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-gray-500">
+                  No upcoming events found.
+                </div>
               )}
             </div>
           </div>
@@ -505,42 +520,38 @@ function AlumniHomepage() {
                     </div>
                   </div>
                 ))
+              ) : Array.isArray(discussions) && discussions.length > 0 ? (
+                discussions.map((discussion) => (
+                  <div
+                    key={discussion.id}
+                    className="p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
+                  >
+                    <Link to={`community/${discussion.id}`} className="block">
+                      <h3 className="text-base font-medium text-gray-800 mb-1 line-clamp-2 hover:text-indigo-600">
+                        {discussion.title}
+                      </h3>
+                      <div className="flex items-center text-xs text-gray-500 mb-2">
+                        <span>By {discussion.author?.name || "Unknown"}</span>
+                        <span className="mx-2">•</span>
+                        <span>{formatDate(discussion.created_at)}</span>
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <div className="flex items-center mr-3">
+                          <MessageSquare size={14} className="mr-1" />
+                          {discussion.comments_count || 0} comments
+                        </div>
+                        <div className="flex items-center">
+                          <Award size={14} className="mr-1" />
+                          {discussion.likes_count || 0} likes
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                ))
               ) : (
-                <>
-                  {discussions.map((discussion) => (
-                    <div
-                      key={discussion.id}
-                      className="p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
-                    >
-                      <Link to={`community/${discussion.id}`} className="block">
-                        <h3 className="text-base font-medium text-gray-800 mb-1 line-clamp-2 hover:text-indigo-600">
-                          {discussion.title}
-                        </h3>
-                        <div className="flex items-center text-xs text-gray-500 mb-2">
-                          <span>By {discussion.author?.name || "Unknown"}</span>
-                          <span className="mx-2">•</span>
-                          <span>{formatDate(discussion.created_at)}</span>
-                        </div>
-                        <div className="flex items-center text-xs text-gray-500">
-                          <div className="flex items-center mr-3">
-                            <MessageSquare size={14} className="mr-1" />
-                            {discussion.comments_count || 0} comments
-                          </div>
-                          <div className="flex items-center">
-                            <Award size={14} className="mr-1" />
-                            {discussion.likes_count || 0} likes
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
-
-                  {discussions.length === 0 && (
-                    <div className="p-8 text-center text-gray-500">
-                      No discussions found.
-                    </div>
-                  )}
-                </>
+                <div className="p-8 text-center text-gray-500">
+                  No discussions found.
+                </div>
               )}
             </div>
           </div>
@@ -568,42 +579,36 @@ function AlumniHomepage() {
                 </div>
               </div>
             </div>
-          ) : (
-            <>
-              {updates.length > 0 ? (
-                updates.map((update) => (
-                  <div
-                    key={update.id}
-                    className="bg-indigo-50 border border-indigo-100 rounded-lg p-4 flex items-start"
-                  >
-                    <div className="bg-indigo-100 rounded-full p-2 mr-4">
-                      <Bell size={20} className="text-indigo-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-gray-800 mb-1">
-                        {update.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-3">
-                        {update.content}
-                      </p>
-                      {update.link && (
-                        <Link
-                          to={update.link.url}
-                          className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center w-max"
-                        >
-                          {update.link.text}{" "}
-                          <ExternalLink size={14} className="ml-1" />
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center text-gray-500">
-                  No university updates available.
+          ) : Array.isArray(updates) && updates.length > 0 ? (
+            updates.map((update) => (
+              <div
+                key={update.id}
+                className="bg-indigo-50 border border-indigo-100 rounded-lg p-4 flex items-start"
+              >
+                <div className="bg-indigo-100 rounded-full p-2 mr-4">
+                  <Bell size={20} className="text-indigo-600" />
                 </div>
-              )}
-            </>
+                <div>
+                  <h3 className="font-medium text-gray-800 mb-1">
+                    {update.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3">{update.content}</p>
+                  {update.link && (
+                    <Link
+                      to={update.link.url}
+                      className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center w-max"
+                    >
+                      {update.link.text}{" "}
+                      <ExternalLink size={14} className="ml-1" />
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center text-gray-500">
+              No university updates available.
+            </div>
           )}
         </div>
       </div>
