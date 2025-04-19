@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { User, Mail, Lock, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import * as THREE from "three";
 
 export default function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -9,6 +10,90 @@ export default function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+
+  // Animation setup
+  useEffect(() => {
+    // Create scene
+    const scene = new THREE.Scene();
+    
+    // Create camera
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 5;
+    
+    // Create renderer
+    const renderer = new THREE.WebGLRenderer({ 
+      alpha: true,
+      antialias: true 
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x3949ab, 0.2); // Indigo tint with transparency
+    
+    // Add renderer to DOM
+    const container = document.getElementById("background-animation");
+    if (container) {
+      container.appendChild(renderer.domElement);
+    }
+    
+    // Create particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 2000;
+    
+    const posArray = new Float32Array(particlesCount * 3);
+    for (let i = 0; i < particlesCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 10;
+    }
+    
+    particlesGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(posArray, 3)
+    );
+    
+    // Material
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.03,
+      color: 0x4f46e5, // Indigo color to match theme
+      transparent: true,
+      opacity: 0.8,
+    });
+    
+    // Mesh
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    
+    // Animation
+    const animate = () => {
+      requestAnimationFrame(animate);
+      
+      particlesMesh.rotation.x += 0.0005;
+      particlesMesh.rotation.y += 0.0005;
+      
+      renderer.render(scene, camera);
+    };
+    
+    animate();
+    
+    // Handle resize
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    
+    window.addEventListener("resize", handleResize);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (container && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
+    };
+  }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -67,8 +152,17 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg transform transition duration-500 hover:scale-105">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+      {/* Background Animation Container */}
+      <div 
+        id="background-animation" 
+        className="absolute inset-0 z-0"
+      ></div>
+      
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/10 to-purple-900/20 z-1"></div>
+      
+      <div className="max-w-md w-full space-y-8 bg-white/90 backdrop-blur-sm p-10 rounded-xl shadow-lg transform transition duration-500 hover:shadow-2xl relative z-10">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Create your account
@@ -234,7 +328,7 @@ export default function Register() {
         </form>
 
         <div className="mt-6">
-          <div className="relative">
+          {/* <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
@@ -243,10 +337,10 @@ export default function Register() {
                 Or register with
               </span>
             </div>
-          </div>
+          </div> */}
 
           <div className="mt-6 grid grid-cols-3 gap-3">
-            <div>
+            {/* <div>
               <a
                 href="#"
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-all duration-300"
@@ -264,9 +358,9 @@ export default function Register() {
                   />
                 </svg>
               </a>
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <a
                 href="#"
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-all duration-300"
@@ -280,9 +374,9 @@ export default function Register() {
                   <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
                 </svg>
               </a>
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <a
                 href="#"
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-all duration-300"
@@ -300,7 +394,7 @@ export default function Register() {
                   />
                 </svg>
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
