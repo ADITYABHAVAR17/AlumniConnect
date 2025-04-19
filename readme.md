@@ -6,11 +6,8 @@ A full-stack web platform that helps educational institutions stay connected wit
 
 ## 🚀 Demo
 
-Live Preview: [https://your-deployment-url.com](https://your-deployment-url.com)  
-Demo Credentials:
+Live Preview: [https://alumniconnect-v15c.onrender.com/](https://alumniconnect-v15c.onrender.com/)  
 
-- **Email**: testuser@example.com
-- **Password**: password123
 
 ---
 
