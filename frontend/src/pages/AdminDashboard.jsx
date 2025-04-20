@@ -78,7 +78,7 @@ const AdminDashboard = () => {
           <div>
             <NavLink to="/admin/dashboard" icon={<Home size={20} />} label="Dashboard" isOpen={isSidebarOpen} />
             <NavLink to="/admin/dashboard/alumni-list" icon={<Users size={20} />} label="Alumni List" isOpen={isSidebarOpen} />
-            <NavLink to="/admin/dashboard/settings" icon={<Settings size={20} />} label="Settings" isOpen={isSidebarOpen} />
+            
           </div>
 
           <div className="mt-auto mb-6">
@@ -142,13 +142,13 @@ const AdminDashboard = () => {
                     <p className="text-xs text-gray-500">admin@example.com</p>
                   </div>
                   <div className="p-2">
-                    <Link
+                    {/* <Link
                       to="/admin/dashboard/settings"
                       className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
                     >
                       <Settings size={16} />
                       <span>Account Settings</span>
-                    </Link>
+                    </Link> */}
                     <button
                       onClick={handleLogout}
                       className="flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-md transition-colors w-full text-left mt-1"
