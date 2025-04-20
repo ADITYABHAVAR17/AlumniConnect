@@ -34,7 +34,8 @@ const Navbar = () => {
         { path: "/forums", label: "Job Board" },
       ],
     },
-    { path: "/login", label: "Login/Register", icon: <LogIn size={18} /> },
+    { path: "/login", label: "Login", icon: <LogIn size={18} /> },
+    { path: "/register", label: "Register", icon: <LogIn size={18} /> },
   ];
 
   // Close dropdown when clicking outside
@@ -48,8 +49,20 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Add/remove class to body when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.classList.add("mobile-navbar-open");
+    } else {
+      document.body.classList.remove("mobile-navbar-open");
+    }
+    return () => {
+      document.body.classList.remove("mobile-navbar-open");
+    };
+  }, [isMenuOpen]);
+
   return (
-    <nav className="bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg fixed w-full z-10">
+    <nav className="bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg fixed w-full z-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0 flex items-center">

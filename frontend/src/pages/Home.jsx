@@ -98,8 +98,35 @@ export default function Home() {
     };
   }, []);
 
+  // Prevent background scroll and interaction when mobile navbar is open
+  useEffect(() => {
+    const checkNavbarOpen = () => {
+      const isNavbarOpen =
+        document.body.classList.contains("mobile-navbar-open") ||
+        document.body.getAttribute("data-navbar-open") === "true";
+      if (isNavbarOpen) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "";
+      }
+    };
+
+    const observer = new MutationObserver(checkNavbarOpen);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class", "data-navbar-open"],
+    });
+
+    checkNavbarOpen();
+
+    return () => {
+      observer.disconnect();
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   return (
-    <div className="pt-16 overflow-hidden">
+    <div className="pt-16 overflow-hidden home-main-content">
       {/* Hero Section with Advanced Background and Web Effect */}
       <section className="relative bg-gradient-to-br from-blue-700 to-indigo-900 text-white py-24 md:py-32">
         {/* Animated background elements */}
@@ -931,6 +958,16 @@ export default function Home() {
 
         .animation-delay-4000 {
           animation-delay: 4s;
+        }
+
+        /* Prevent interaction with homepage when navbar is open on mobile */
+        @media (max-width: 768px) {
+          body.mobile-navbar-open .home-main-content {
+            pointer-events: none;
+            filter: blur(2px) brightness(0.8);
+            user-select: none;
+            touch-action: none;
+          }
         }
       `}</style>
     </div>

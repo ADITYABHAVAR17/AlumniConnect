@@ -28,7 +28,6 @@ function AlumniDashboard() {
       })
       .then((res) => {
         setProfile(res.data);
-        console.log(res.data);
         setLoading(false);
       })
       .catch((err) => {
@@ -46,7 +45,7 @@ function AlumniDashboard() {
   return (
     <div className="flex bg-gray-100 min-h-screen">
       {/* Mobile sidebar toggle */}
-      <div className="lg:hidden fixed top-4 left-4 z-20">
+      <div className="lg:hidden fixed top-4 left-4 z-30">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="p-2 rounded-md bg-indigo-600 text-white"
@@ -55,11 +54,13 @@ function AlumniDashboard() {
         </button>
       </div>
 
-      {/* Sidebar - fixed on mobile, static on desktop */}
+      {/* Sidebar */}
       <div
         className={`${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed lg:sticky lg:translate-x-0 top-0 z-10 transition-transform duration-300 ease-in-out w-64 h-screen bg-indigo-900 text-white shadow-lg flex flex-col overflow-y-auto`}
+        } fixed top-0 left-0 z-20 transition-transform duration-300 ease-in-out w-64 
+        bg-indigo-900 backdrop-blur-lg text-white shadow-lg flex flex-col
+        h-full min-h-screen max-h-none inset-y-0 overflow-y-auto`}
       >
         {/* Logo & Header */}
         <div className="p-5 border-b border-indigo-800">
@@ -69,7 +70,7 @@ function AlumniDashboard() {
             </div>
             <div>
               <h1 className="font-bold text-xl">Alumni Portal</h1>
-              <p className="text-xs text-indigo-300">Class of 2024</p>
+              {/* <p className="text-xs text-indigo-300">Class of 2024</p> */}
             </div>
           </div>
         </div>
@@ -136,9 +137,11 @@ function AlumniDashboard() {
               <li>
                 <Link
                   to="community"
-                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${isActive(
-                    "forum"
-                  )}`}
+                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                    location.pathname.includes("community") 
+                      ? "bg-indigo-700 text-white" 
+                      : "text-gray-300 hover:bg-indigo-800 hover:text-white"
+                  }`}
                 >
                   <MessageSquare size={18} className="mr-3" />
                   Discussion Forum
@@ -165,7 +168,7 @@ function AlumniDashboard() {
               </li>
               <li>
                 <Link
-                  to="logout"
+                  to="/login"
                   className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-indigo-800 hover:text-white"
                 >
                   <LogOut size={18} className="mr-3" />
@@ -195,7 +198,7 @@ function AlumniDashboard() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col lg:ml-64">
         {/* Header */}
         <header className="bg-white shadow sticky top-0 z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">

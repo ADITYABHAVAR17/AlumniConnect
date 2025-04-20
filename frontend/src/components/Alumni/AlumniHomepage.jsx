@@ -166,7 +166,7 @@ function AlumniHomepage() {
     <div className="space-y-8">
       {/* Welcome Banner */}
       <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl text-white p-8">
-        <div className="relative z-10">
+        <div className="relative">
           <h1 className="text-3xl font-bold mb-2">
             Welcome to the Alumni Network
           </h1>
